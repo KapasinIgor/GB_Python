@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 def status_log(data):
-    time = datetime.now().strftime('%H:%M')
+    time = datetime.now().strftime('%m.%d.%Y - %H:%M')
     with open('log.txt', 'a+') as log:
         log.write(f"{[time]} - {data}\n")
 
