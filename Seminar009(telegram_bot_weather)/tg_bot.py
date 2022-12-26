@@ -5,6 +5,7 @@ from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from find_city import find_city
+from logger import add_log
 
 bot = Bot(token=bot_token)
 dp = Dispatcher(bot)
@@ -30,15 +31,19 @@ async def get_weather(message: types.Message):
         pressure = data['fact']['pressure_mm']
         wind = data['fact']['wind_speed']
 
+        summary = (f"{city}:\n"
+                   f"Температура: {temperature}С°\n"
+                   f"Влажность: {humidity}%\n"
+                   f"Давление: {pressure} мм.рт.ст.\n"
+                   f"Скорость ветра: {wind} м/с\n")
+
+        add_log("Запрос погоды", summary)
+
         await message.reply(f"***{datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}***\n"
-                            f"{brand_yandex}\nСейчас в городе {city}:\n"
-                            f"Температура: {temperature}С°\n"
-                            f"Влажность: {humidity}%\n"
-                            f"Давление: {pressure} мм.рт.ст.\n"
-                            f"Скорость ветра: {wind} м/с\n"
-                            f"***Хорошего вам дня!***")
+                            f"{brand_yandex}\nСейчас в городе {summary} ***Хорошего вам дня!***")
 
     except:
+        add_log("Запрос погоды", f"Ошибка в названии города. Введено: {message.text}\n")
         await message.reply("\U00002620 Проверьте правильность написания города! \U00002620")
 
 
